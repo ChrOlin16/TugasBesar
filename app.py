@@ -41,6 +41,10 @@ section[data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"],
 [data-testid="collapsedControl"] {{ display: none; }}
 h1, h2, h3, h4, p, label, li, span {{ color: {TEXT}; }}
 
+.awal {{ text-align: center; padding: 14vh 0 22px 0; }}
+.awal .t1 {{ font-size: 2.6rem; font-weight: 700; color: {NAVY}; line-height: 1.2; }}
+.awal .t2 {{ font-size: 1.05rem; color: #5B6275; margin-top: 12px; }}
+.awal-note {{ text-align: center; font-size: 0.8rem; color: #5B6275; margin-top: 22px; }}
 .judul {{ font-size: 1.7rem; font-weight: 700; color: {NAVY}; margin-bottom: 2px; }}
 .sub {{ color: #5B6275; margin-bottom: 18px; }}
 
@@ -114,6 +118,16 @@ def cb_kasus(kode):
     st.session_state["kasus_aktif"] = kode
 
 
+def cb_mulai():
+    st.session_state["mulai"] = True
+
+
+def cb_awal():
+    cb_reset()
+    st.session_state["mulai"] = False
+
+
+st.session_state.setdefault("mulai", False)
 for _k in sistem.symptom_codes():
     st.session_state.setdefault(f"cb_{_k}", False)
 
@@ -159,7 +173,23 @@ def kartu_hasil(lap, lengkap=True):
     st.markdown(isi + "</div>", unsafe_allow_html=True)
 
 
+# ------------------------------------------------------------- halaman awal
+if not st.session_state["mulai"]:
+    st.markdown(
+        '<div class="awal"><div class="t1">Cek Tingkat Stres<br>Mahasiswa</div>'
+        '<div class="t2">Skrining awal dalam beberapa menit.</div></div>',
+        unsafe_allow_html=True,
+    )
+    _a, tengah, _b = st.columns([1.2, 1, 1.2])
+    tengah.button("Mulai", on_click=cb_mulai, use_container_width=True)
+    st.markdown(
+        '<div class="awal-note">Hasil bersifat skrining non-klinis, bukan diagnosis.</div>',
+        unsafe_allow_html=True,
+    )
+    st.stop()
+
 # --------------------------------------------------------------------- judul
+st.button("← Kembali ke Awal", on_click=cb_awal, key="kembali")
 st.markdown('<div class="judul">Sistem Pakar Identifikasi Dini Tingkat Stres Mahasiswa</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub">Pilih gejala yang Anda alami, lalu tekan Analisis.</div>', unsafe_allow_html=True)
 
